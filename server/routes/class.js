@@ -31,4 +31,15 @@ router.post('/', (req, res, next) => {
   });
 });
 
+// 获取所有的班级信息
+router.get('/', (req, res) => {
+  models.Class.findAll().then(classes => {
+    res.json({
+      code: 0,
+      msg: '',
+      data: classes
+    });
+  });
+});
+
 module.exports = router;

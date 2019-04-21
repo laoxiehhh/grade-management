@@ -19,5 +19,6 @@ module.exports = {
         collate: 'utf8_general_ci'
       }
     }
-  }
+  },
+  jwtSecret: 'somesecretkeyforjsonwebtoken'
 };

@@ -26,4 +26,15 @@ router.post('/', (req, res) => {
   });
 });
 
+// 获取所有的专业
+router.get('/', (req, res) => {
+  models.Profession.findAll().then(professions => {
+    res.json({
+      code: 0,
+      msg: '',
+      data: professions
+    });
+  });
+});
+
 module.exports = router;

@@ -27,4 +27,15 @@ router.post('/', (req, res) => {
   });
 });
 
+// 获取所有的考核方式类别
+router.get('/', (req, res) => {
+  models.AssessmentCategory.findAll().then(assessmentCategories => {
+    res.json({
+      code: 0,
+      msg: '',
+      data: assessmentCategories
+    });
+  });
+});
+
 module.exports = router;

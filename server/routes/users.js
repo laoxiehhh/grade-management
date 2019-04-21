@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 const models = require('../models');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const config = require('../config/config');
 
 const findClassById = classId => {
   return models.Class.findByPk(classId);
@@ -77,6 +79,133 @@ router.post('/create', (req, res) => {
               data: { ...dataValues }
             });
           });
+        });
+      }
+    });
+  }
+});
+
+// 学生 老师 管理员 登录
+router.post('/login', (req, res) => {
+  const { Username, Password, Type } = req.body;
+  // 当Type===1时，表示学生登录；2时表示老师登录； 3时表示管理员登录
+  if (+Type === 1) {
+    models.Student.findOne({
+      where: { Username }
+    }).then(student => {
+      if (!student) {
+        res.json({
+          code: 1,
+          msg: 'The username does not exist',
+          data: {}
+        });
+      } else {
+        const { dataValues } = student;
+        bcrypt.compare(Password, student.Password, (err, isMatch) => {
+          if (isMatch) {
+            const token = jwt.sign(
+              {
+                id: student.id,
+                Username: student.Username,
+                Type: 1
+              },
+              config.jwtSecret
+            );
+            res.json({
+              code: 0,
+              msg: '',
+              data: {
+                ...dataValues,
+                token
+              }
+            });
+          } else {
+            res.json({
+              code: 1,
+              msg: 'Incorrect password',
+              data: {}
+            });
+          }
+        });
+      }
+    });
+  } else if (+Type === 2) {
+    models.Teacher.findOne({
+      where: { Username }
+    }).then(teacher => {
+      if (!teacher) {
+        res.json({
+          code: 1,
+          msg: 'The username does not exist',
+          data: {}
+        });
+      } else {
+        const { dataValues } = teacher;
+        bcrypt.compare(Password, teacher.Password, (err, isMatch) => {
+          if (isMatch) {
+            const token = jwt.sign(
+              {
+                id: teacher.id,
+                Username: teacher.Username,
+                Type: 2
+              },
+              config.jwtSecret
+            );
+            res.json({
+              code: 0,
+              msg: '',
+              data: {
+                ...dataValues,
+                token
+              }
+            });
+          } else {
+            res.json({
+              code: 1,
+              msg: 'Incorrect password',
+              data: {}
+            });
+          }
+        });
+      }
+    });
+  } else {
+    models.Admin.findOne({
+      where: { Username }
+    }).then(admin => {
+      if (!admin) {
+        res.json({
+          code: 1,
+          msg: 'The username does not exist',
+          data: {}
+        });
+      } else {
+        const { dataValues } = admin;
+        bcrypt.compare(Password, admin.Password, (err, isMatch) => {
+          if (isMatch) {
+            const token = jwt.sign(
+              {
+                id: admin.id,
+                Username: admin.Username,
+                Type: 3
+              },
+              config.jwtSecret
+            );
+            res.json({
+              code: 0,
+              msg: '',
+              data: {
+                ...dataValues,
+                token
+              }
+            });
+          } else {
+            res.json({
+              code: 1,
+              msg: 'Incorrect password',
+              data: {}
+            });
+          }
         });
       }
     });

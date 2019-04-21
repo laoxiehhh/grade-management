@@ -9,6 +9,7 @@ var usersRouter = require('./routes/users');
 var classRouter = require('./routes/class');
 var professionRouter = require('./routes/profession');
 var assessmentCategory = require('./routes/assessmentCategory');
+var lessonRouter = require('./routes/lesson');
 
 var app = express();
 
@@ -27,6 +28,7 @@ app.use('/api/user', usersRouter);
 app.use('/api/class', classRouter);
 app.use('/api/profession', professionRouter);
 app.use('/api/assessmentCategory', assessmentCategory);
+app.use('/api/lesson', lessonRouter);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
