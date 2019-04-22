@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
   Assessment.associate = models => {
     models.Assessment.belongsTo(models.AssessmentCategory);
     models.Lesson.hasMany(models.Assessment);
+    models.Assessment.belongsTo(models.Lesson);
   };
 
   return Assessment;
