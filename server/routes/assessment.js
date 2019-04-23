@@ -60,18 +60,4 @@ router.post('/', (req, res) => {
   });
 });
 
-// 获取某个课程考核方式信息
-router.get('/:lessonId', (req, res) => {
-  const { lessonId } = req.params;
-  models.Assessment.findAll({
-    where: { LessonId: +lessonId }
-  }).then(assessments => {
-    res.json({
-      code: 0,
-      msg: '',
-      data: assessments
-    });
-  });
-});
-
 module.exports = router;

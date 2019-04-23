@@ -1,15 +1,15 @@
 module.exports = (sequelize, DataTypes) => {
-  const AssessToLesson = sequelize.define('AssessToLesson', {
+  const AccessToLesson = sequelize.define('AccessToLesson', {
     Status: {
       type: DataTypes.INTEGER, // 0未处理 1审核通过 2未通过
       allowNull: false
     }
   });
 
-  AssessToLesson.associate = models => {
-    models.AssessToLesson.belongsTo(models.Student);
-    models.AssessToLesson.belongsTo(models.Lesson);
+  AccessToLesson.associate = models => {
+    models.AccessToLesson.belongsTo(models.Student);
+    models.AccessToLesson.belongsTo(models.Lesson);
   };
 
-  return AssessToLesson;
+  return AccessToLesson;
 };

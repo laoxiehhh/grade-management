@@ -10,6 +10,12 @@ router.post('/', (req, res) => {
     Deadline: new Date(Deadline)
   }).then(task => {
     models.Assessment.findByPk(+AssessmentId).then(assessment => {
+      const { LessonId } = assessment;
+      models.Lesson.findByPk(+LessonId).then(lesson => {
+        lesson.getStudents().then(associatedStudents => {
+          task.setStudents(associatedStudents);
+        });
+      });
       task.setAssessment(assessment).then(() => {
         res.json({
           code: 0,

@@ -54,4 +54,48 @@ router.get('/', (req, res) => {
   });
 });
 
+// 获取某个课程考核方式信息
+router.get('/:lessonId/assessment', (req, res) => {
+  const { lessonId } = req.params;
+  models.Assessment.findAll({
+    where: { LessonId: +lessonId }
+  }).then(assessments => {
+    res.json({
+      code: 0,
+      msg: '',
+      data: assessments
+    });
+  });
+});
+
+const getTaskByAssessment = assessment => {
+  return assessment.getTasks().then(tasks => {
+    return tasks;
+  });
+};
+
+// 获取某个课程所有任务的信息
+router.get('/:lessonId/task', (req, res) => {
+  const { lessonId } = req.params;
+  let taskList = [];
+  const promiseArr = [];
+  models.Assessment.findAll({
+    where: { LessonId: +lessonId }
+  }).then(assessments => {
+    assessments.forEach(assessment => {
+      promiseArr.push(getTaskByAssessment(assessment));
+    });
+    Promise.all(promiseArr).then(result => {
+      result.forEach(item => {
+        taskList = taskList.concat(item);
+      });
+      res.json({
+        code: 0,
+        msg: '',
+        data: taskList
+      });
+    });
+  });
+});
+
 module.exports = router;
