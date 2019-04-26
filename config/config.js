@@ -26,7 +26,7 @@ const plugins = [
         loadingComponent: './components/PageLoading/index',
         webpackChunkName: true,
         level: 3,
-      }
+      },
     },
   ],
 ];
@@ -34,6 +34,9 @@ const plugins = [
 export default {
   // add for transfer to umi
   plugins,
+  define: {
+    APP_TYPE: APP_TYPE || '',
+  },
   treeShaking: true,
   targets: {
     ie: 11,
