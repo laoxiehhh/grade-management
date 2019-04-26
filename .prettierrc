@@ -1,8 +1,7 @@
 {
   "singleQuote": true,
   "trailingComma": "es5",
-  "printWidth": 80,
-  "proseWrap": "never",
+  "printWidth": 100,
   "overrides": [
     {
       "files": ".prettierrc",
