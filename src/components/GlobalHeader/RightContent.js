@@ -1,12 +1,8 @@
 import React, { PureComponent } from 'react';
-import { FormattedMessage, formatMessage } from 'umi/locale';
-import { Spin, Tag, Menu, Icon, Avatar, Tooltip } from 'antd';
+import { Spin, Tag, Menu, Icon, Avatar } from 'antd';
 import moment from 'moment';
 import groupBy from 'lodash/groupBy';
-import { NoticeIcon } from 'ant-design-pro';
-import HeaderSearch from '../HeaderSearch';
 import HeaderDropdown from '../HeaderDropdown';
-import SelectLang from '../SelectLang';
 import styles from './index.less';
 
 export default class GlobalHeaderRight extends PureComponent {
@@ -64,109 +60,34 @@ export default class GlobalHeaderRight extends PureComponent {
   };
 
   render() {
-    const {
-      currentUser,
-      fetchingNotices,
-      onNoticeVisibleChange,
-      onMenuClick,
-      onNoticeClear,
-      theme,
-    } = this.props;
+    const { currentUser, onMenuClick, theme } = this.props;
     const menu = (
       <Menu className={styles.menu} selectedKeys={[]} onClick={onMenuClick}>
         <Menu.Item key="userCenter">
           <Icon type="user" />
-          <FormattedMessage id="menu.account.center" defaultMessage="account center" />
+          <span>个人中心</span>
         </Menu.Item>
         <Menu.Item key="userinfo">
           <Icon type="setting" />
-          <FormattedMessage id="menu.account.settings" defaultMessage="account settings" />
+          <span>个人设置</span>
         </Menu.Item>
         <Menu.Item key="triggerError">
           <Icon type="close-circle" />
-          <FormattedMessage id="menu.account.trigger" defaultMessage="Trigger Error" />
+          <span>出发错误</span>
         </Menu.Item>
         <Menu.Divider />
         <Menu.Item key="logout">
           <Icon type="logout" />
-          <FormattedMessage id="menu.account.logout" defaultMessage="logout" />
+          <span>退出登录</span>
         </Menu.Item>
       </Menu>
     );
-    const noticeData = this.getNoticeData();
-    const unreadMsg = this.getUnreadData(noticeData);
     let className = styles.right;
     if (theme === 'dark') {
       className = `${styles.right}  ${styles.dark}`;
     }
     return (
       <div className={className}>
-        <HeaderSearch
-          className={`${styles.action} ${styles.search}`}
-          placeholder={formatMessage({ id: 'component.globalHeader.search' })}
-          dataSource={[
-            formatMessage({ id: 'component.globalHeader.search.example1' }),
-            formatMessage({ id: 'component.globalHeader.search.example2' }),
-            formatMessage({ id: 'component.globalHeader.search.example3' }),
-          ]}
-          onSearch={value => {
-            console.log('input', value); // eslint-disable-line
-          }}
-          onPressEnter={value => {
-            console.log('enter', value); // eslint-disable-line
-          }}
-        />
-        <Tooltip title={formatMessage({ id: 'component.globalHeader.help' })}>
-          <a
-            target="_blank"
-            href="https://pro.ant.design/docs/getting-started"
-            rel="noopener noreferrer"
-            className={styles.action}
-          >
-            <Icon type="question-circle-o" />
-          </a>
-        </Tooltip>
-        <NoticeIcon
-          className={styles.action}
-          count={currentUser.unreadCount}
-          onItemClick={(item, tabProps) => {
-            console.log(item, tabProps); // eslint-disable-line
-            this.changeReadState(item, tabProps);
-          }}
-          locale={{
-            emptyText: formatMessage({ id: 'component.noticeIcon.empty' }),
-            clear: formatMessage({ id: 'component.noticeIcon.clear' }),
-          }}
-          onClear={onNoticeClear}
-          onPopupVisibleChange={onNoticeVisibleChange}
-          loading={fetchingNotices}
-          clearClose
-        >
-          <NoticeIcon.Tab
-            count={unreadMsg.notification}
-            list={noticeData.notification}
-            title={formatMessage({ id: 'component.globalHeader.notification' })}
-            name="notification"
-            emptyText={formatMessage({ id: 'component.globalHeader.notification.empty' })}
-            emptyImage="https://gw.alipayobjects.com/zos/rmsportal/wAhyIChODzsoKIOBHcBk.svg"
-          />
-          <NoticeIcon.Tab
-            count={unreadMsg.message}
-            list={noticeData.message}
-            title={formatMessage({ id: 'component.globalHeader.message' })}
-            name="message"
-            emptyText={formatMessage({ id: 'component.globalHeader.message.empty' })}
-            emptyImage="https://gw.alipayobjects.com/zos/rmsportal/sAuJeJzSKbUmHfBQRzmZ.svg"
-          />
-          <NoticeIcon.Tab
-            count={unreadMsg.event}
-            list={noticeData.event}
-            title={formatMessage({ id: 'component.globalHeader.event' })}
-            name="event"
-            emptyText={formatMessage({ id: 'component.globalHeader.event.empty' })}
-            emptyImage="https://gw.alipayobjects.com/zos/rmsportal/HsIsxMZiWKrNUavQUXqx.svg"
-          />
-        </NoticeIcon>
         {currentUser.name ? (
           <HeaderDropdown overlay={menu}>
             <span className={`${styles.action} ${styles.account}`}>
@@ -182,7 +103,6 @@ export default class GlobalHeaderRight extends PureComponent {
         ) : (
           <Spin size="small" style={{ marginLeft: 8, marginRight: 8 }} />
         )}
-        <SelectLang className={styles.action} />
       </div>
     );
   }

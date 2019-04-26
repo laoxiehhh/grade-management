@@ -1,6 +1,6 @@
 // ref: https://umijs.org/config/
 import { primaryColor } from '../src/defaultSettings';
-
+import pageRoutes from './router.config';
 export default {
   plugins: [
     [
@@ -12,11 +12,6 @@ export default {
         },
         targets: {
           ie: 11,
-        },
-        locale: {
-          enable: true, // default false
-          default: 'zh-CN', // default zh-CN
-          baseNavigator: true, // default true, when it is true, will use `navigator.language` overwrite default
         },
         dynamicImport: {
           loadingComponent: './components/PageLoading/index',
@@ -40,32 +35,7 @@ export default {
   /**
    * 路由相关配置
    */
-  routes: [
-    {
-      path: '/user',
-      component: '../layouts/UserLayout',
-      routes: [{ path: '/user', component: './Welcome' }],
-    },
-    {
-      path: '/',
-      component: '../layouts/BasicLayout',
-      routes: [
-        { path: '/', redirect: '/welcome' },
-        // dashboard
-        {
-          path: '/welcome',
-          name: 'welcome',
-          icon: 'smile',
-          component: './Welcome',
-        },
-        {
-          path: 'https://github.com/umijs/umi-blocks/tree/master/ant-design-pro',
-          name: 'more-blocks',
-          icon: 'block',
-        },
-      ],
-    },
-  ],
+  routes: pageRoutes,
   disableRedirectHoist: true,
 
   /**
@@ -74,6 +44,8 @@ export default {
   define: {
     APP_TYPE: process.env.APP_TYPE || '',
   },
+  treeShaking: true,
+  devtool: 'source-map',
   // Theme for antd
   // https://ant.design/docs/react/customize-theme-cn
   theme: {

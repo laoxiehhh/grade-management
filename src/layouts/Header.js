@@ -1,5 +1,4 @@
 import React, { PureComponent } from 'react';
-import { formatMessage } from 'umi/locale';
 import { Layout, message } from 'antd';
 import Animate from 'rc-animate';
 import { connect } from 'dva';
@@ -42,11 +41,7 @@ class HeaderView extends PureComponent {
   };
 
   handleNoticeClear = type => {
-    message.success(
-      `${formatMessage({ id: 'component.noticeIcon.cleared' })} ${formatMessage({
-        id: `component.globalHeader.${type}`,
-      })}`
-    );
+    message.success('成功');
     const { dispatch } = this.props;
     dispatch({
       type: 'global/clearNotices',

@@ -8,7 +8,6 @@ import { ContainerQuery } from 'react-container-query';
 import classNames from 'classnames';
 import pathToRegexp from 'path-to-regexp';
 import Media from 'react-media';
-import { formatMessage } from 'umi/locale';
 import Authorized from '@/utils/Authorized';
 import logo from '../assets/logo.svg';
 import Footer from './Footer';
@@ -113,10 +112,7 @@ class BasicLayout extends React.PureComponent {
     if (!currRouterData) {
       return 'Ant Design Pro';
     }
-    const pageName = formatMessage({
-      id: currRouterData.locale || currRouterData.name,
-      defaultMessage: currRouterData.name,
-    });
+    const pageName = currRouterData.name;
 
     return `${pageName} - Ant Design Pro`;
   };

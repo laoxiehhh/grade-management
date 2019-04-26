@@ -1,33 +1,24 @@
 import memoizeOne from 'memoize-one';
 import isEqual from 'lodash/isEqual';
-import { formatMessage } from 'umi/locale';
 import Authorized from '@/utils/Authorized';
 
 const { check } = Authorized;
 
 // Conversion router to menu.
-function formatter(data, parentAuthority, parentName) {
+function formatter(data, parentAuthority) {
   return data
     .map(item => {
       if (!item.name || !item.path) {
         return null;
       }
 
-      let locale = 'menu';
-      if (parentName) {
-        locale = `${parentName}.${item.name}`;
-      } else {
-        locale = `menu.${item.name}`;
-      }
-
       const result = {
         ...item,
-        name: formatMessage({ id: locale, defaultMessage: item.name }),
-        locale,
+        name: item.name,
         authority: item.authority || parentAuthority,
       };
       if (item.routes) {
-        const children = formatter(item.routes, item.authority, locale);
+        const children = formatter(item.routes, item.authority);
         // Reduce memory usage
         result.children = children;
       }
