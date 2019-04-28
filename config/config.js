@@ -44,6 +44,12 @@ export default {
   define: {
     APP_TYPE: process.env.APP_TYPE || '',
   },
+  proxy: {
+    '/api': {
+      target: 'http://localhost:3000',
+      changeOrigin: true,
+    },
+  },
   treeShaking: true,
   devtool: 'source-map',
   // Theme for antd

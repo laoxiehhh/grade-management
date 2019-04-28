@@ -1,51 +1,32 @@
-import { query as queryUsers, queryCurrent } from '@/services/user';
+import { login } from '@/services/user';
+import { routerRedux } from 'dva/router';
+import { setToken } from '@/utils/setAuthorizationToken';
 
 export default {
   namespace: 'user',
 
   state: {
-    list: [],
     currentUser: {},
   },
 
   effects: {
-    *fetch(_, { call, put }) {
-      const response = yield call(queryUsers);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
-    },
-    *fetchCurrent(_, { call, put }) {
-      const response = yield call(queryCurrent);
+    *login({ payload }, { call, put }) {
+      const response = yield call(login, payload);
+      if (!response) return;
       yield put({
         type: 'saveCurrentUser',
         payload: response,
       });
+      yield call(setToken, response.token);
+      yield put(routerRedux.replace('/'));
     },
   },
 
   reducers: {
-    save(state, action) {
-      return {
-        ...state,
-        list: action.payload,
-      };
-    },
     saveCurrentUser(state, action) {
       return {
         ...state,
         currentUser: action.payload || {},
-      };
-    },
-    changeNotifyCount(state, action) {
-      return {
-        ...state,
-        currentUser: {
-          ...state.currentUser,
-          notifyCount: action.payload.totalCount,
-          unreadCount: action.payload.unreadCount,
-        },
       };
     },
   },

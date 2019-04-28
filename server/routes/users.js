@@ -23,27 +23,24 @@ router.post('/create', (req, res) => {
     Gender, // 1为男，2为女
     Type,
     classId,
-    professionId
+    professionId,
   } = body;
   const password_digest = bcrypt.hashSync(Password, 10);
   // Type 为1时表示学生注册； 为2时表示老师注册
   if (+Type === 1) {
     models.Student.findOrCreate({
       where: { Username },
-      defaults: { Name, Telephone, Password: password_digest, Gender }
+      defaults: { Name, Telephone, Password: password_digest, Gender },
     }).spread((student, created) => {
       const { dataValues } = student;
       if (!created) {
         res.json({
           code: 1,
           msg: 'This student already exists',
-          data: { ...dataValues }
+          data: { ...dataValues },
         });
       } else {
-        Promise.all([
-          findClassById(+classId),
-          findProfessionById(+professionId)
-        ]).then(result => {
+        Promise.all([findClassById(+classId), findProfessionById(+professionId)]).then(result => {
           const [c, profession] = result;
           student.setClass(c);
           student.setProfession(profession);
@@ -51,7 +48,7 @@ router.post('/create', (req, res) => {
             res.json({
               code: 0,
               msg: '',
-              data: { ...dataValues }
+              data: { ...dataValues },
             });
           });
         });
@@ -60,14 +57,14 @@ router.post('/create', (req, res) => {
   } else {
     models.Teacher.findOrCreate({
       where: { Username },
-      defaults: { Name, Telephone, Password: password_digest, Gender }
+      defaults: { Name, Telephone, Password: password_digest, Gender },
     }).spread((teacher, created) => {
       const { dataValues } = teacher;
       if (!created) {
         res.json({
           code: 1,
           msg: 'This teacher already exists',
-          data: { ...dataValues }
+          data: { ...dataValues },
         });
       } else {
         findProfessionById(+professionId).then(profession => {
@@ -76,7 +73,7 @@ router.post('/create', (req, res) => {
             res.json({
               code: 0,
               msg: '',
-              data: { ...dataValues }
+              data: { ...dataValues },
             });
           });
         });
@@ -91,13 +88,13 @@ router.post('/login', (req, res) => {
   // 当Type===1时，表示学生登录；2时表示老师登录； 3时表示管理员登录
   if (+Type === 1) {
     models.Student.findOne({
-      where: { Username }
+      where: { Username },
     }).then(student => {
       if (!student) {
         res.json({
           code: 1,
           msg: 'The username does not exist',
-          data: {}
+          data: {},
         });
       } else {
         const { dataValues } = student;
@@ -106,8 +103,10 @@ router.post('/login', (req, res) => {
             const token = jwt.sign(
               {
                 id: student.id,
+                Name: student.Name,
                 Username: student.Username,
-                Type: 1
+                CurrentAuthority: 'student',
+                Type: 1,
               },
               config.jwtSecret
             );
@@ -116,14 +115,14 @@ router.post('/login', (req, res) => {
               msg: '',
               data: {
                 ...dataValues,
-                token
-              }
+                token,
+              },
             });
           } else {
             res.json({
               code: 1,
               msg: 'Incorrect password',
-              data: {}
+              data: {},
             });
           }
         });
@@ -131,13 +130,13 @@ router.post('/login', (req, res) => {
     });
   } else if (+Type === 2) {
     models.Teacher.findOne({
-      where: { Username }
+      where: { Username },
     }).then(teacher => {
       if (!teacher) {
         res.json({
           code: 1,
           msg: 'The username does not exist',
-          data: {}
+          data: {},
         });
       } else {
         const { dataValues } = teacher;
@@ -146,8 +145,10 @@ router.post('/login', (req, res) => {
             const token = jwt.sign(
               {
                 id: teacher.id,
+                Name: teacher.Name,
                 Username: teacher.Username,
-                Type: 2
+                CurrentAuthority: 'teacher',
+                Type: 2,
               },
               config.jwtSecret
             );
@@ -156,14 +157,14 @@ router.post('/login', (req, res) => {
               msg: '',
               data: {
                 ...dataValues,
-                token
-              }
+                token,
+              },
             });
           } else {
             res.json({
               code: 1,
               msg: 'Incorrect password',
-              data: {}
+              data: {},
             });
           }
         });
@@ -171,13 +172,13 @@ router.post('/login', (req, res) => {
     });
   } else {
     models.Admin.findOne({
-      where: { Username }
+      where: { Username },
     }).then(admin => {
       if (!admin) {
         res.json({
           code: 1,
           msg: 'The username does not exist',
-          data: {}
+          data: {},
         });
       } else {
         const { dataValues } = admin;
@@ -186,8 +187,10 @@ router.post('/login', (req, res) => {
             const token = jwt.sign(
               {
                 id: admin.id,
+                Name: admin.Name,
                 Username: admin.Username,
-                Type: 3
+                CurrentAuthority: 'admin',
+                Type: 3,
               },
               config.jwtSecret
             );
@@ -196,14 +199,14 @@ router.post('/login', (req, res) => {
               msg: '',
               data: {
                 ...dataValues,
-                token
-              }
+                token,
+              },
             });
           } else {
             res.json({
               code: 1,
               msg: 'Incorrect password',
-              data: {}
+              data: {},
             });
           }
         });

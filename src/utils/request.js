@@ -45,4 +45,33 @@ const request = extend({
   credentials: 'include', // 默认请求是否带上cookie
 });
 
+const myRequest = url =>
+  request(url).then(res => {
+    if (!res) return null;
+    const { code, data, msg } = res;
+    if (code !== 0) {
+      notification.error({
+        message: `请求错误`,
+        description: msg,
+      });
+      return null;
+    }
+    return data;
+  });
+
+myRequest.post = async (url, options) => {
+  const res = await request.post(url, options);
+  if (!res) return null;
+  const { code, data, msg } = res;
+  if (code !== 0) {
+    notification.error({
+      message: `请求错误`,
+      description: msg,
+    });
+    return null;
+  }
+  return data;
+};
+
 export default request;
+export { myRequest };

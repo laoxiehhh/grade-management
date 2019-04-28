@@ -9,11 +9,14 @@ import classNames from 'classnames';
 import pathToRegexp from 'path-to-regexp';
 import Media from 'react-media';
 import Authorized from '@/utils/Authorized';
+import jwtDecode from 'jwt-decode';
+import router from 'umi/router';
 import logo from '../assets/logo.svg';
 import Footer from './Footer';
 import Header from './Header';
 import Context from './MenuContext';
 import SiderMenu from '@/components/SiderMenu';
+import { getToken, setAuthorizationToken } from '@/utils/setAuthorizationToken';
 
 import styles from './BasicLayout.less';
 
@@ -56,16 +59,23 @@ class BasicLayout extends React.PureComponent {
       dispatch,
       route: { routes, authority },
     } = this.props;
-    dispatch({
-      type: 'user/fetchCurrent',
-    });
-    dispatch({
-      type: 'setting/getSetting',
-    });
-    dispatch({
-      type: 'menu/getMenuData',
-      payload: { routes, authority },
-    });
+    const jwtToken = getToken();
+    if (jwtToken) {
+      setAuthorizationToken(jwtToken);
+      dispatch({
+        type: 'user/saveCurrentUser',
+        payload: jwtDecode(jwtToken),
+      });
+      dispatch({
+        type: 'setting/getSetting',
+      });
+      dispatch({
+        type: 'menu/getMenuData',
+        payload: { routes, authority },
+      });
+    } else {
+      router.push('/user/login');
+    }
   }
 
   componentDidUpdate(preProps) {

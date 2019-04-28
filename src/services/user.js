@@ -1,13 +1,9 @@
-import request from '@/utils/request';
+import { myRequest } from '@/utils/request';
 
-export async function query() {
-  return request('/api/users');
+export async function login(payload) {
+  return myRequest.post('/api/user/login', { data: { ...payload } });
 }
 
-export async function queryCurrent() {
-  return request('/api/currentUser');
-}
-
-export async function queryNotices() {
-  return request('/api/notices');
+export async function logout(payload) {
+  return myRequest.post('/api/user/login', { data: { ...payload } });
 }
