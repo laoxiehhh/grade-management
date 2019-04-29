@@ -1,29 +1,30 @@
 var express = require('express');
 var router = express.Router();
 const models = require('../models');
+const authenticate = require('../middlewares/authenticate');
 
 // 创建班级
-router.post('/', (req, res, next) => {
+router.post('/', authenticate, (req, res, next) => {
   const { body } = req;
-  const { Name, professionId } = body;
+  const { Name, ProfessionId } = body;
   models.Class.findOrCreate({
-    where: { Name }
+    where: { Name },
   }).spread((c, created) => {
     const { dataValues } = c;
     if (!created) {
       res.json({
         code: 1,
         msg: 'This class already exists',
-        data: { ...dataValues }
+        data: { ...dataValues },
       });
     } else {
-      models.Profession.findByPk(+professionId).then(profession => {
+      models.Profession.findByPk(+ProfessionId).then(profession => {
         c.setProfession(profession);
         c.save().then(() => {
           res.json({
             code: 0,
             msg: '',
-            data: { ...dataValues }
+            data: { ...dataValues },
           });
         });
       });
@@ -32,12 +33,12 @@ router.post('/', (req, res, next) => {
 });
 
 // 获取所有的班级信息
-router.get('/', (req, res) => {
+router.get('/', authenticate, (req, res) => {
   models.Class.findAll().then(classes => {
     res.json({
       code: 0,
       msg: '',
-      data: classes
+      data: classes,
     });
   });
 });

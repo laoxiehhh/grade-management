@@ -84,6 +84,7 @@ router.post('/create', (req, res) => {
 
 // 学生 老师 管理员 登录
 router.post('/login', (req, res) => {
+  console.log(req.headers.authorization);
   const { Username, Password, Type } = req.body;
   // 当Type===1时，表示学生登录；2时表示老师登录； 3时表示管理员登录
   if (+Type === 1) {

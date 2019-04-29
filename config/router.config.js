@@ -20,9 +20,21 @@ export default [
         component: './Welcome',
       },
       {
-        path: 'https://github.com/umijs/umi-blocks/tree/master/ant-design-pro',
-        name: 'more-blocks',
-        icon: 'block',
+        path: '/system',
+        name: '系统管理',
+        icon: 'dashboard',
+        routes: [
+          {
+            path: '/system/profession',
+            name: '创建专业',
+            component: './System/Profession',
+          },
+          {
+            path: '/system/class',
+            name: '创建班级',
+            component: './System/Class',
+          },
+        ],
       },
     ],
   },

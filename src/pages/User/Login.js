@@ -7,8 +7,9 @@ import styles from './index.less';
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
 
-@connect(({ user }) => ({
+@connect(({ user, loading }) => ({
   user,
+  submitting: loading.effects['user/login'],
 }))
 @Form.create()
 class Login extends PureComponent {
@@ -26,7 +27,7 @@ class Login extends PureComponent {
   };
 
   render() {
-    const { form } = this.props;
+    const { form, submitting } = this.props;
     const { getFieldDecorator } = form;
     return (
       <div className={styles.main}>
@@ -54,7 +55,13 @@ class Login extends PureComponent {
             })(<Input size="large" type="password" placeholder="密码" />)}
           </FormItem>
           <FormItem>
-            <Button size="large" className={styles.submit} type="primary" htmlType="submit">
+            <Button
+              size="large"
+              className={styles.submit}
+              type="primary"
+              htmlType="submit"
+              loading={submitting}
+            >
               登录
             </Button>
             <Link className={styles.login} to="/User/Login">

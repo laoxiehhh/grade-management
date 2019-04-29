@@ -73,6 +73,12 @@ class BasicLayout extends React.PureComponent {
         type: 'menu/getMenuData',
         payload: { routes, authority },
       });
+      dispatch({
+        type: 'global/getProfessions',
+      });
+      dispatch({
+        type: 'global/getClasses',
+      });
     } else {
       router.push('/user/login');
     }
@@ -120,11 +126,11 @@ class BasicLayout extends React.PureComponent {
     const currRouterData = this.matchParamsPath(pathname, breadcrumbNameMap);
 
     if (!currRouterData) {
-      return 'Ant Design Pro';
+      return 'Grade Management';
     }
     const pageName = currRouterData.name;
 
-    return `${pageName} - Ant Design Pro`;
+    return `${pageName} - Grade Management`;
   };
 
   getLayoutStyle = () => {
