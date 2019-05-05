@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const models = require('../models');
+const authenticate = require('../middlewares/authenticate');
 
 const findTeacherById = teacherId => {
   return models.Teacher.findByPk(teacherId);
@@ -11,23 +12,21 @@ const findProfessionById = professionId => {
 };
 
 // 教师创建课程
-router.post('/', (req, res, next) => {
+router.post('/', authenticate, (req, res) => {
   const { body } = req;
-  const { Name, ProfessionId, TeacherId } = body;
+  const { Name, ProfessionId, TeacherId, Desc } = body;
   models.Lesson.findOrCreate({
-    where: { Name, TeacherId }
+    where: { Name, TeacherId },
+    defaults: { Desc },
   }).spread((lesson, created) => {
     if (!created) {
       res.json({
         code: 1,
         msg: 'This lesson of this teacher already exists',
-        data: lesson
+        data: lesson,
       });
     } else {
-      Promise.all([
-        findTeacherById(+TeacherId),
-        findProfessionById(+ProfessionId)
-      ]).then(result => {
+      Promise.all([findTeacherById(+TeacherId), findProfessionById(+ProfessionId)]).then(result => {
         const [teacher, profession] = result;
         lesson.setTeacher(teacher);
         lesson.setProfession(profession);
@@ -35,7 +34,7 @@ router.post('/', (req, res, next) => {
           res.json({
             code: 0,
             msg: '',
-            data: lesson
+            data: lesson,
           });
         });
       });
@@ -49,7 +48,7 @@ router.get('/', (req, res) => {
     res.json({
       code: 0,
       msg: '',
-      data: lessons
+      data: lessons,
     });
   });
 });
@@ -58,12 +57,12 @@ router.get('/', (req, res) => {
 router.get('/:lessonId/assessment', (req, res) => {
   const { lessonId } = req.params;
   models.Assessment.findAll({
-    where: { LessonId: +lessonId }
+    where: { LessonId: +lessonId },
   }).then(assessments => {
     res.json({
       code: 0,
       msg: '',
-      data: assessments
+      data: assessments,
     });
   });
 });
@@ -80,7 +79,7 @@ router.get('/:lessonId/task', (req, res) => {
   let taskList = [];
   const promiseArr = [];
   models.Assessment.findAll({
-    where: { LessonId: +lessonId }
+    where: { LessonId: +lessonId },
   }).then(assessments => {
     assessments.forEach(assessment => {
       promiseArr.push(getTaskByAssessment(assessment));
@@ -92,8 +91,22 @@ router.get('/:lessonId/task', (req, res) => {
       res.json({
         code: 0,
         msg: '',
-        data: taskList
+        data: taskList,
       });
+    });
+  });
+});
+
+// 获取某个老师的所有课程
+router.get('/:teacherId', authenticate, (req, res) => {
+  const { teacherId } = req.params;
+  models.Lesson.findAll({
+    where: { TeacherId: +teacherId },
+  }).then(lessons => {
+    res.json({
+      code: 0,
+      msg: '',
+      data: lessons,
     });
   });
 });

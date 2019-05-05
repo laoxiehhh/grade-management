@@ -41,6 +41,23 @@ export default [
           },
         ],
       },
+      {
+        path: '/lesson',
+        name: '课程管理',
+        icon: 'project',
+        routes: [
+          {
+            path: '/lesson/create',
+            name: '创建课程',
+            component: './Lesson/CreateLesson',
+          },
+          {
+            path: '/lesson/mylessons',
+            name: '我的课程',
+            component: './Lesson/MyLesson',
+          },
+        ],
+      },
     ],
   },
 ];
