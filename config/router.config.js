@@ -10,6 +10,7 @@ export default [
   {
     path: '/',
     component: '../layouts/BasicLayout',
+    Routes: ['src/pages/Authorized'],
     routes: [
       { path: '/', redirect: '/welcome' },
       // dashboard
@@ -23,6 +24,7 @@ export default [
         path: '/system',
         name: '系统管理',
         icon: 'dashboard',
+        authority: ['admin'],
         routes: [
           {
             path: '/system/profession',

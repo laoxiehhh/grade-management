@@ -84,6 +84,7 @@ export default {
   state: {
     menuData: [],
     breadcrumbNameMap: {},
+    routerData: [],
   },
 
   effects: {
@@ -93,7 +94,7 @@ export default {
       const breadcrumbNameMap = memoizeOneGetBreadcrumbNameMap(menuData);
       yield put({
         type: 'save',
-        payload: { menuData, breadcrumbNameMap },
+        payload: { menuData, breadcrumbNameMap, routerData: routes },
       });
     },
   },

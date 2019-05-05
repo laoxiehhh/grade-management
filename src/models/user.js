@@ -4,6 +4,8 @@ import { stringify } from 'qs';
 import { setToken, removeToken, removeAuthorizationToken } from '@/utils/setAuthorizationToken';
 import { getPageQuery } from '@/utils/utils';
 import { message } from 'antd';
+import { setAuthority } from '@/utils/authority';
+import { reloadAuthorized } from '@/utils/Authorized';
 
 export default {
   namespace: 'user',
@@ -14,8 +16,24 @@ export default {
 
   effects: {
     *login({ payload }, { call, put }) {
+      const { Type } = payload;
       const response = yield call(login, payload);
       if (!response) return;
+      let currentAuthority = '';
+      if (Type === 1) {
+        currentAuthority = 'student';
+      } else if (Type === 2) {
+        currentAuthority = 'teacher';
+      } else if (Type === 3) {
+        currentAuthority = 'admin';
+      }
+      yield put({
+        type: 'changeLoginStatus',
+        payload: {
+          currentAuthority,
+        },
+      });
+      reloadAuthorized();
       yield put({
         type: 'saveCurrentUser',
         payload: response,
@@ -28,6 +46,7 @@ export default {
         type: 'saveCurrentUser',
         payload: {},
       });
+      reloadAuthorized();
       yield call(removeToken);
       yield call(removeAuthorizationToken);
       const { redirect } = getPageQuery();
@@ -54,6 +73,12 @@ export default {
       return {
         ...state,
         currentUser: action.payload || {},
+      };
+    },
+    changeLoginStatus(state, { payload }) {
+      setAuthority(payload.currentAuthority);
+      return {
+        ...state,
       };
     },
   },
