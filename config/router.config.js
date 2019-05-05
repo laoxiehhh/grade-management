@@ -34,6 +34,11 @@ export default [
             name: '创建班级',
             component: './System/Class',
           },
+          {
+            path: '/system/assessmentCategory',
+            name: '创建考核类别',
+            component: './System/AssessmentCategory',
+          },
         ],
       },
     ],

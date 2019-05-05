@@ -74,10 +74,7 @@ class BasicLayout extends React.PureComponent {
         payload: { routes, authority },
       });
       dispatch({
-        type: 'global/getProfessions',
-      });
-      dispatch({
-        type: 'global/getClasses',
+        type: 'global/getAssessmentCategories',
       });
     } else {
       router.push('/user/login');

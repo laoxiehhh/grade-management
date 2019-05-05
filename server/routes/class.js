@@ -33,8 +33,22 @@ router.post('/', authenticate, (req, res, next) => {
 });
 
 // 获取所有的班级信息
-router.get('/', authenticate, (req, res) => {
+router.get('/', (req, res) => {
   models.Class.findAll().then(classes => {
+    res.json({
+      code: 0,
+      msg: '',
+      data: classes,
+    });
+  });
+});
+
+// 根据专业id获取该专业下所有的班级
+router.get('/:professionId', (req, res) => {
+  const { professionId } = req.params;
+  models.Class.findAll({
+    where: { ProfessionId: +professionId },
+  }).then(classes => {
     res.json({
       code: 0,
       msg: '',

@@ -12,6 +12,15 @@ export async function createClass(payload) {
   return myRequest.post('/api/class', { data: { ...payload } });
 }
 
-export async function getClasses() {
-  return myRequest('/api/class');
+export async function getClasses(payload) {
+  const { ProfessionId } = payload;
+  return myRequest(`/api/class/${ProfessionId}`);
+}
+
+export async function createAssessmentCategory(payload) {
+  return myRequest.post('/api/assessmentCategory', { data: { ...payload } });
+}
+
+export async function getAssessmentCategories() {
+  return myRequest('/api/assessmentCategory');
 }

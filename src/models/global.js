@@ -1,4 +1,11 @@
-import { createProfession, getProfessions, createClass, getClasses } from '@/services/global';
+import {
+  createProfession,
+  getProfessions,
+  createClass,
+  getClasses,
+  createAssessmentCategory,
+  getAssessmentCategories,
+} from '@/services/global';
 import { message } from 'antd';
 
 export default {
@@ -8,6 +15,7 @@ export default {
     collapsed: false,
     professionList: [],
     classList: [],
+    assessmentCategoryList: [],
   },
 
   effects: {
@@ -37,11 +45,28 @@ export default {
       });
       message.success('创建成功');
     },
-    *getClasses(_, { call, put }) {
-      const response = yield call(getClasses);
+    *getClasses({ payload }, { call, put }) {
+      const response = yield call(getClasses, payload);
       if (!response) return;
       yield put({
         type: 'saveClasses',
+        payload: response,
+      });
+    },
+    *createAssessmentCategory({ payload }, { call, put }) {
+      const response = yield call(createAssessmentCategory, payload);
+      if (!response) return;
+      yield put({
+        type: 'addAssessmentCategory',
+        payload: response,
+      });
+      message.success('创建成功');
+    },
+    *getAssessmentCategories(_, { call, put }) {
+      const response = yield call(getAssessmentCategories);
+      if (!response) return;
+      yield put({
+        type: 'saveAssessmentCategories',
         payload: response,
       });
     },
@@ -76,6 +101,18 @@ export default {
       return {
         ...state,
         classList: payload,
+      };
+    },
+    addAssessmentCategory(state, { payload }) {
+      return {
+        ...state,
+        assessmentCategoryList: [...state.assessmentCategoryList, payload],
+      };
+    },
+    saveAssessmentCategories(state, { payload }) {
+      return {
+        ...state,
+        assessmentCategoryList: payload,
       };
     },
   },

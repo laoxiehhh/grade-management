@@ -1,8 +1,9 @@
-import { login } from '@/services/user';
+import { login, register } from '@/services/user';
 import { routerRedux } from 'dva/router';
 import { stringify } from 'qs';
 import { setToken, removeToken, removeAuthorizationToken } from '@/utils/setAuthorizationToken';
 import { getPageQuery } from '@/utils/utils';
+import { message } from 'antd';
 
 export default {
   namespace: 'user',
@@ -40,6 +41,11 @@ export default {
           })
         );
       }
+    },
+    *register({ payload }, { call }) {
+      const response = yield call(register, payload);
+      if (!response) return;
+      message.success('注册成功!');
     },
   },
 

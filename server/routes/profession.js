@@ -28,7 +28,7 @@ router.post('/', authenticate, (req, res) => {
 });
 
 // 获取所有的专业
-router.get('/', authenticate, (req, res) => {
+router.get('/', (req, res) => {
   models.Profession.findAll().then(professions => {
     res.json({
       code: 0,

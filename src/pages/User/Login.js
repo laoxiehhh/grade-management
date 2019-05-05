@@ -64,7 +64,7 @@ class Login extends PureComponent {
             >
               登录
             </Button>
-            <Link className={styles.login} to="/User/Login">
+            <Link className={styles.login} to="/User/Register">
               没有账号？去注册
             </Link>
           </FormItem>

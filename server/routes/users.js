@@ -5,12 +5,12 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const config = require('../config/config');
 
-const findClassById = classId => {
-  return models.Class.findByPk(classId);
+const findClassById = ClassId => {
+  return models.Class.findByPk(ClassId);
 };
 
-const findProfessionById = professionId => {
-  return models.Profession.findByPk(professionId);
+const findProfessionById = ProfessionId => {
+  return models.Profession.findByPk(ProfessionId);
 };
 // 学生或老师注册
 router.post('/create', (req, res) => {
@@ -22,8 +22,8 @@ router.post('/create', (req, res) => {
     Password,
     Gender, // 1为男，2为女
     Type,
-    classId,
-    professionId,
+    ClassId,
+    ProfessionId,
   } = body;
   const password_digest = bcrypt.hashSync(Password, 10);
   // Type 为1时表示学生注册； 为2时表示老师注册
@@ -40,7 +40,7 @@ router.post('/create', (req, res) => {
           data: { ...dataValues },
         });
       } else {
-        Promise.all([findClassById(+classId), findProfessionById(+professionId)]).then(result => {
+        Promise.all([findClassById(+ClassId), findProfessionById(+ProfessionId)]).then(result => {
           const [c, profession] = result;
           student.setClass(c);
           student.setProfession(profession);
@@ -67,7 +67,7 @@ router.post('/create', (req, res) => {
           data: { ...dataValues },
         });
       } else {
-        findProfessionById(+professionId).then(profession => {
+        findProfessionById(+ProfessionId).then(profession => {
           teacher.setProfession(profession);
           teacher.save().then(() => {
             res.json({

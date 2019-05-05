@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import Link from 'umi/link';
+import { connect } from 'dva';
 import { Form, Input, Button, Select, Radio } from 'antd';
 import styles from './index.less';
 
@@ -8,11 +9,37 @@ const InputGroup = Input.Group;
 const { Option } = Select;
 const RadioGroup = Radio.Group;
 
+@connect(({ user, loading, global }) => ({
+  user,
+  ...global,
+  submitting: loading.effects['user/register'],
+}))
 @Form.create()
 class Register extends PureComponent {
   state = {
     prefix: '86',
     confirmDirty: false,
+  };
+
+  componentDidMount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'global/getProfessions',
+    });
+  }
+
+  handleSubmit = e => {
+    e.preventDefault();
+    const { form, dispatch } = this.props;
+    form.validateFields({ force: true }, (err, values) => {
+      if (!err) {
+        dispatch({
+          type: 'user/register',
+          payload: values,
+        });
+        form.resetFields();
+      }
+    });
   };
 
   checkPassword = (rule, value, callback) => {
@@ -45,19 +72,40 @@ class Register extends PureComponent {
     this.setState({ confirmDirty: confirmDirty || !!value });
   };
 
-  render() {
+  handleProfessionChange = value => {
+    const { form, dispatch } = this.props;
+    const { getFieldValue, resetFields } = form;
+    const typeValue = getFieldValue('Type');
+    if (typeValue === 1) {
+      resetFields(['ClassId']);
+      dispatch({
+        type: 'global/getClasses',
+        payload: { ProfessionId: value },
+      });
+    }
+  };
+
+  handleTypeChange = () => {
     const { form } = this.props;
-    const { getFieldDecorator } = form;
+    const { resetFields } = form;
+    resetFields(['ProfessionId', 'ClassId']);
+  };
+
+  render() {
+    const { form, professionList, classList } = this.props;
+    const { getFieldDecorator, getFieldValue } = form;
     const { prefix } = this.state;
+    const typeValue = getFieldValue('Type');
+    const professionId = getFieldValue('ProfessionId');
     return (
       <div className={styles.main}>
         <h3>注册</h3>
-        <Form>
+        <Form onSubmit={this.handleSubmit}>
           <FormItem>
             {getFieldDecorator('Type', {
               initialValue: 1,
             })(
-              <RadioGroup size="large">
+              <RadioGroup size="large" onChange={this.handleTypeChange}>
                 <Radio value={1}>学生</Radio>
                 <Radio value={2}>老师</Radio>
               </RadioGroup>
@@ -134,6 +182,38 @@ class Register extends PureComponent {
               </Select>
             )}
           </FormItem>
+          <FormItem>
+            {getFieldDecorator('ProfessionId', {
+              rules: [{ required: true, message: '请选择专业' }],
+            })(
+              <Select placeholder="专业" size="large" onChange={this.handleProfessionChange}>
+                {professionList.map(profession => {
+                  return (
+                    <Option value={profession.id} key={profession.id}>
+                      {profession.Name}
+                    </Option>
+                  );
+                })}
+              </Select>
+            )}
+          </FormItem>
+          {typeValue === 1 && professionId && (
+            <FormItem>
+              {getFieldDecorator('ClassId', {
+                rules: [{ required: true, message: '请选择班级' }],
+              })(
+                <Select placeholder="班级" size="large">
+                  {classList.map(c => {
+                    return (
+                      <Option value={c.id} key={c.id}>
+                        {c.Name}
+                      </Option>
+                    );
+                  })}
+                </Select>
+              )}
+            </FormItem>
+          )}
           <FormItem>
             <Button size="large" className={styles.submit} type="primary" htmlType="submit">
               注册
