@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const models = require('../models');
+const authenticate = require('../middlewares/authenticate');
 
 const createAssessment = Proportion => {
   return models.Assessment.create({ Proportion });
@@ -18,7 +19,7 @@ const createAssessmentFunc = (AssessmentCategoryId, Proportion, LessonId) => {
   return Promise.all([
     createAssessment(Proportion),
     findAssessmentCategoryById(AssessmentCategoryId),
-    findLessonById(LessonId)
+    findLessonById(LessonId),
   ]).then(result => {
     const [assessment, assessmentCategory, lesson] = result;
     assessment.setAssessmentCategory(assessmentCategory);
@@ -35,7 +36,7 @@ const createAssessmentFunc = (AssessmentCategoryId, Proportion, LessonId) => {
 //     AssessmentCategoryId: proportion
 //   }
 // }
-router.post('/', (req, res) => {
+router.post('/', authenticate, (req, res) => {
   const { LessonId, AssessmentMap = {} } = req.body;
   const totalProportion = Object.keys(AssessmentMap).reduce((pre, cur) => {
     return pre + AssessmentMap[cur];
@@ -44,7 +45,7 @@ router.post('/', (req, res) => {
     return res.json({
       code: 1,
       msg: '各考核方式所占百分比的总和应该为100',
-      data: {}
+      data: {},
     });
   }
   const arr = [];
@@ -55,7 +56,7 @@ router.post('/', (req, res) => {
     res.json({
       code: 0,
       msg: '',
-      data: result
+      data: result,
     });
   });
 });

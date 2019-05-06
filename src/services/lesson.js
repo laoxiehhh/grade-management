@@ -8,3 +8,7 @@ export async function getSelfLessons(payload) {
   const { teacherId } = payload;
   return myRequest(`/api/lesson/${teacherId}`);
 }
+
+export async function setAssessment(payload) {
+  return myRequest.post('/api/assessment', { data: { ...payload } });
+}

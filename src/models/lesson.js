@@ -1,4 +1,4 @@
-import { createLesson, getSelfLessons } from '@/services/lesson';
+import { createLesson, getSelfLessons, setAssessment } from '@/services/lesson';
 import { message } from 'antd';
 
 export default {
@@ -11,11 +11,29 @@ export default {
 
   effects: {
     *createLesson({ payload }, { call, put }) {
-      const response = yield call(createLesson, payload);
-      if (!response) return;
+      const { TeacherId, Name, Desc, ProfessionId, ...rest } = payload;
+      const response1 = yield call(createLesson, {
+        TeacherId,
+        Name,
+        Desc,
+        ProfessionId,
+      });
+      if (!response1) return;
+      const { id } = response1;
+      const AssessmentMap = Object.keys(rest).reduce((pre, cur) => {
+        if (rest[cur] !== 0) {
+          return { ...pre, [cur]: rest[cur] };
+        }
+        return pre;
+      }, {});
+      const response2 = yield call(setAssessment, {
+        LessonId: id,
+        AssessmentMap,
+      });
+      if (!response2) return;
       yield put({
         type: 'addLesson',
-        payload: response,
+        payload: response1,
       });
       message.success('创建成功!');
     },

@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-import { Form, Input, Button, Select } from 'antd';
+import { Form, Input, Button, Select, Divider, InputNumber, message } from 'antd';
 import { connect } from 'dva';
 import styles from './CreateLesson.less';
 
@@ -11,15 +11,23 @@ const { TextArea } = Input;
 @connect(({ global, loading, user }) => ({
   currentUser: user.currentUser,
   professionList: global.professionList,
+  assessmentCategoryList: global.assessmentCategoryList,
   submitting: loading.effects['lesson/createLesson'],
 }))
 @Form.create()
 class CreateLesson extends PureComponent {
   handleSubmit = e => {
     e.preventDefault();
-    const { form, dispatch, currentUser } = this.props;
+    const { form, dispatch, currentUser, assessmentCategoryList } = this.props;
+    // eslint-disable-next-line consistent-return
     form.validateFields({ force: true }, (err, values) => {
       if (!err) {
+        const totalProportion = assessmentCategoryList.reduce((pre, cur) => {
+          return pre + values[cur.id];
+        }, 0);
+        if (totalProportion !== 100) {
+          return message.error('各考核方式所占百分比的总和应为100%!');
+        }
         dispatch({
           type: 'lesson/createLesson',
           payload: {
@@ -33,7 +41,7 @@ class CreateLesson extends PureComponent {
   };
 
   render() {
-    const { form, submitting, professionList } = this.props;
+    const { form, submitting, professionList, assessmentCategoryList } = this.props;
     const { getFieldDecorator } = form;
     const formItemLayout = {
       labelCol: {
@@ -75,6 +83,25 @@ class CreateLesson extends PureComponent {
                 </Select>
               )}
             </FormItem>
+            <Divider>设置课程各考核方式所占的百分比</Divider>
+            {assessmentCategoryList.map(assessmentCategory => {
+              const { Name, id } = assessmentCategory;
+              return (
+                <FormItem label={Name} {...formItemLayout} key={id}>
+                  {getFieldDecorator(`${id}`, {
+                    initialValue: 0,
+                  })(
+                    <InputNumber
+                      size="large"
+                      min={0}
+                      max={100}
+                      formatter={value => `${value}%`}
+                      parser={value => value.replace('%', '')}
+                    />
+                  )}
+                </FormItem>
+              );
+            })}
             <FormItem {...buttonLayout}>
               <Button
                 size="large"
