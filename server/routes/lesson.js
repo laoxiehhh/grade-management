@@ -43,8 +43,21 @@ router.post('/', authenticate, (req, res) => {
 });
 
 // 获取所有的课程列表
-router.get('/', (req, res) => {
-  models.Lesson.findAll().then(lessons => {
+router.get('/', authenticate, (req, res) => {
+  models.Lesson.findAll({
+    include: [models.Teacher, models.Profession, models.Assessment],
+  }).then(lessons => {
+    res.json({
+      code: 0,
+      msg: '',
+      data: lessons,
+    });
+  });
+});
+
+// 获取某个角色的所有已加入课程
+router.get('/self', authenticate, (req, res) => {
+  req.currentUser.getLessons().then(lessons => {
     res.json({
       code: 0,
       msg: '',
@@ -93,20 +106,6 @@ router.get('/:lessonId/task', (req, res) => {
         msg: '',
         data: taskList,
       });
-    });
-  });
-});
-
-// 获取某个老师的所有课程
-router.get('/:teacherId', authenticate, (req, res) => {
-  const { teacherId } = req.params;
-  models.Lesson.findAll({
-    where: { TeacherId: +teacherId },
-  }).then(lessons => {
-    res.json({
-      code: 0,
-      msg: '',
-      data: lessons,
     });
   });
 });

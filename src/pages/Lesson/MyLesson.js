@@ -14,12 +14,9 @@ import styles from './MyLesson.less';
 }))
 class MyLesson extends PureComponent {
   componentDidMount() {
-    const { dispatch, currentUser } = this.props;
+    const { dispatch } = this.props;
     dispatch({
       type: 'lesson/getSelfLessons',
-      payload: {
-        teacherId: currentUser.id,
-      },
     });
   }
 
@@ -28,10 +25,7 @@ class MyLesson extends PureComponent {
 
     const content = (
       <div className={styles.pageHeaderContent}>
-        <p>
-          我的课程：教师所任课的课程,
-          可进行课程考核方式设置、课程任务设置、申请加入课程审批、课程任务布置
-        </p>
+        <p>我的课程：教师所任课的课程, 可进行申请加入课程审批、课程任务布置</p>
       </div>
     );
 

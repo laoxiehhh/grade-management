@@ -58,6 +58,11 @@ export default [
             name: '我的课程',
             component: './Lesson/MyLesson',
           },
+          {
+            path: '/lesson/joinlesson',
+            name: '加入课程',
+            component: './Lesson/JoinLesson',
+          },
         ],
       },
     ],
