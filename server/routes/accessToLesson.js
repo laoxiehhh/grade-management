@@ -44,6 +44,21 @@ router.get('/:studentId', authenticate, (req, res) => {
   });
 });
 
+// 课程当前的申请
+router.get('/lesson/:lessonId', authenticate, (req, res) => {
+  const { lessonId } = req.params;
+  models.AccessToLesson.findAll({
+    where: { LessonId: +lessonId },
+    include: [models.Student, models.Lesson],
+  }).then(accessToLesson => {
+    res.json({
+      code: 0,
+      msg: '',
+      data: accessToLesson,
+    });
+  });
+});
+
 // 老师处理学生加入课程的申请
 router.post('/:accessToLessonId', authenticate, (req, res) => {
   const { accessToLessonId } = req.params;

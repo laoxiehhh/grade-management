@@ -14,6 +14,7 @@ export default {
   state: {
     collapsed: false,
     professionList: [],
+    professionById: {},
     classList: [],
     assessmentCategoryList: [],
   },
@@ -86,9 +87,17 @@ export default {
       };
     },
     saveProfessions(state, { payload }) {
+      const professionById = payload.reduce((pre, cur) => {
+        const { id, ...rest } = cur;
+        return {
+          ...pre,
+          [id]: rest,
+        };
+      }, {});
       return {
         ...state,
         professionList: payload,
+        professionById,
       };
     },
     addClass(state, { payload }) {

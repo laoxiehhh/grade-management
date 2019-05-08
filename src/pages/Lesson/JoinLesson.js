@@ -167,8 +167,12 @@ class JoinLesson extends PureComponent {
                 const JoinBtn = (
                   <a onClick={() => this.handleLessonJoin(item)}>&nbsp;&nbsp;&nbsp;加入</a>
                 );
-                const Waiting = <a>待审核</a>;
-                const HasJoin = <a>已加入</a>;
+                const Waiting = (
+                  <a style={{ color: 'rgba(0,0,0,0.65)', cursor: 'not-allowed' }}>待审核</a>
+                );
+                const HasJoin = (
+                  <a style={{ color: 'rgba(0,0,0,0.65)', cursor: 'not-allowed' }}>已加入</a>
+                );
                 let ActionNode;
                 if (accessToLessonList.some(i => i.LessonId === id && i.Status === 0)) {
                   ActionNode = Waiting;

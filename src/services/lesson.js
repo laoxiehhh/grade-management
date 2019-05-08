@@ -24,3 +24,17 @@ export async function getAccessToLessons(payload) {
   const { studentId } = payload;
   return myRequest(`/api/accessToLesson/${studentId}`);
 }
+
+export async function getAccessToLessonsByLessonId(payload) {
+  const { lessonId } = payload;
+  return myRequest(`/api/accessToLesson/lesson/${lessonId}`);
+}
+
+export async function getAllClasses() {
+  return myRequest('/api/class');
+}
+
+export async function accessToLesson(payload) {
+  const { accessToLessonId, Status } = payload;
+  return myRequest.post(`/api/accessToLesson/${accessToLessonId}`, { data: { Status } });
+}

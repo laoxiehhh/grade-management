@@ -54,14 +54,20 @@ export default [
             component: './Lesson/CreateLesson',
           },
           {
-            path: '/lesson/mylessons',
+            path: '/lesson/teacherlesson',
             name: '我的课程',
-            component: './Lesson/MyLesson',
+            component: './Lesson/TeacherLesson',
           },
           {
             path: '/lesson/joinlesson',
             name: '加入课程',
             component: './Lesson/JoinLesson',
+          },
+          {
+            path: '/lesson/access/:lessonId',
+            name: '课程审批',
+            component: './Lesson/AccessToLesson',
+            hideInMenu: true,
           },
         ],
       },

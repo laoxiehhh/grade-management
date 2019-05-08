@@ -5,6 +5,9 @@ import {
   getAllLessons,
   joinLesson,
   getAccessToLessons,
+  getAccessToLessonsByLessonId,
+  getAllClasses,
+  accessToLesson,
 } from '@/services/lesson';
 import { message } from 'antd';
 
@@ -13,8 +16,11 @@ export default {
 
   state: {
     lessonList: [],
+    lessonById: {},
     selfLessonList: [],
-    accessToLessonList: [],
+    accessToLessonList: [], // 学生的申请列表
+    accessToLessonListFormLesson: [], // 老师某个课程的申请列表
+    classById: {}, // 所有班级的列表的map
   },
 
   effects: {
@@ -77,6 +83,32 @@ export default {
         payload: response,
       });
     },
+    *getAccessToLessonsByLessonId({ payload }, { call, put }) {
+      const response = yield call(getAccessToLessonsByLessonId, payload);
+      if (!response) return;
+      yield put({
+        type: 'saveAccessToLessonListFormLesson',
+        payload: response,
+      });
+    },
+    *getAllClasses(_, { call, put }) {
+      const response = yield call(getAllClasses);
+      if (!response) return;
+      yield put({
+        type: 'saveAllClasses',
+        payload: response,
+      });
+    },
+    *accessToLesson({ payload }, { call, put }) {
+      const { lessonId, Status, accessToLessonId } = payload;
+      const response = yield call(accessToLesson, { Status, accessToLessonId });
+      if (!response) return;
+      yield put({
+        type: 'getAccessToLessonsByLessonId',
+        payload: { lessonId },
+      });
+      message.success('审批成功');
+    },
   },
 
   reducers: {
@@ -93,9 +125,17 @@ export default {
       };
     },
     saveLessonList(state, { payload }) {
+      const lessonById = payload.reduce((pre, cur) => {
+        const { id, ...rest } = cur;
+        return {
+          ...pre,
+          [id]: rest,
+        };
+      }, {});
       return {
         ...state,
         lessonList: payload,
+        lessonById,
       };
     },
     saveAccessToLessons(state, { payload }) {
@@ -108,6 +148,25 @@ export default {
       return {
         ...state,
         accessToLessonList: [...state.accessToLessonList, payload],
+      };
+    },
+    saveAccessToLessonListFormLesson(state, { payload }) {
+      return {
+        ...state,
+        accessToLessonListFormLesson: payload,
+      };
+    },
+    saveAllClasses(state, { payload }) {
+      const classById = payload.reduce((pre, cur) => {
+        const { id, ...rest } = cur;
+        return {
+          ...pre,
+          [id]: rest,
+        };
+      }, {});
+      return {
+        ...state,
+        classById,
       };
     },
   },

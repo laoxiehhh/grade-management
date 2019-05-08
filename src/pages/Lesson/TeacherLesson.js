@@ -1,24 +1,34 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { Card, List } from 'antd';
+import router from 'umi/router';
 
 import Ellipsis from '@/components/Ellipsis';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
-import styles from './MyLesson.less';
+import styles from './TeacherLesson.less';
 
 @connect(({ lesson, loading, user }) => ({
   ...lesson,
   ...user,
   loading: loading.models.lesson,
 }))
-class MyLesson extends PureComponent {
+class TeacherLesson extends PureComponent {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
       type: 'lesson/getSelfLessons',
     });
   }
+
+  handleAccessClick = value => {
+    const { id } = value;
+    router.push(`/lesson/access/${id}`);
+  };
+
+  handleTaskClick = value => {
+    console.log(value);
+  };
 
   render() {
     const { selfLessonList, loading } = this.props;
@@ -46,21 +56,24 @@ class MyLesson extends PureComponent {
             loading={loading}
             grid={{ gutter: 24, lg: 3, md: 2, sm: 1, xs: 1 }}
             dataSource={[...selfLessonList]}
-            renderItem={item => (
-              <List.Item key={item.id}>
-                <Card hoverable className={styles.card} actions={[<a>操作一</a>, <a>操作二</a>]}>
-                  <Card.Meta
-                    // avatar={<img alt="" className={styles.cardAvatar} src={item.avatar} />}
-                    title={<a>{item.Name}</a>}
-                    description={
-                      <Ellipsis className={styles.item} lines={3}>
-                        {item.Desc}
-                      </Ellipsis>
-                    }
-                  />
-                </Card>
-              </List.Item>
-            )}
+            renderItem={item => {
+              const Action1 = <a onClick={() => this.handleAccessClick(item)}>课程审批</a>;
+              const Action2 = <a onClick={() => this.handleTaskClick(item)}>任务布置</a>;
+              return (
+                <List.Item key={item.id}>
+                  <Card hoverable className={styles.card} actions={[Action1, Action2]}>
+                    <Card.Meta
+                      title={<a>{item.Name}</a>}
+                      description={
+                        <Ellipsis className={styles.item} lines={3}>
+                          {item.Desc}
+                        </Ellipsis>
+                      }
+                    />
+                  </Card>
+                </List.Item>
+              );
+            }}
           />
         </div>
       </PageHeaderWrapper>
@@ -68,10 +81,4 @@ class MyLesson extends PureComponent {
   }
 }
 
-// const ActionNode = (props) => {
-//   return (
-//     <a></a>
-//   )
-// }
-
-export default MyLesson;
+export default TeacherLesson;
