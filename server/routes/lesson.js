@@ -81,9 +81,13 @@ router.get('/:lessonId/assessment', (req, res) => {
 });
 
 const getTaskByAssessment = assessment => {
-  return assessment.getTasks().then(tasks => {
-    return tasks;
-  });
+  return assessment
+    .getTasks({
+      include: [models.Assessment],
+    })
+    .then(tasks => {
+      return tasks;
+    });
 };
 
 // 获取某个课程所有任务的信息

@@ -8,6 +8,11 @@ import {
   getAccessToLessonsByLessonId,
   getAllClasses,
   accessToLesson,
+  getLessonTask,
+  getLessonAssessments,
+  createLessonTask,
+  getTaskDetail,
+  setTaskScore,
 } from '@/services/lesson';
 import { message } from 'antd';
 
@@ -21,6 +26,9 @@ export default {
     accessToLessonList: [], // 学生的申请列表
     accessToLessonListFormLesson: [], // 老师某个课程的申请列表
     classById: {}, // 所有班级的列表的map
+    lessonTaskList: [], // 某个课程的任务列表
+    lessonAssessmentList: [], // 某个课程的考核方式列表
+    taskDetail: [], // 某个任务的学生成绩列表
   },
 
   effects: {
@@ -74,6 +82,7 @@ export default {
         type: 'addAccessToLesson',
         payload: response,
       });
+      message.success('申请成功，等待老师审核!');
     },
     *getAccessToLessons({ payload }, { call, put }) {
       const response = yield call(getAccessToLessons, payload);
@@ -108,6 +117,49 @@ export default {
         payload: { lessonId },
       });
       message.success('审批成功');
+    },
+    *getLessonTask({ payload }, { call, put }) {
+      const response = yield call(getLessonTask, payload);
+      if (!response) return;
+      yield put({
+        type: 'saveLessonTaskList',
+        payload: response,
+      });
+    },
+    *getLessonAssessments({ payload }, { call, put }) {
+      const response = yield call(getLessonAssessments, payload);
+      if (!response) return;
+      yield put({
+        type: 'saveLessonAssessmentList',
+        payload: response,
+      });
+    },
+    *createLessonTask({ payload }, { call, put }) {
+      const { lessonId, ...rest } = payload;
+      const response = yield call(createLessonTask, rest);
+      if (!response) return;
+      yield put({
+        type: 'getLessonTask',
+        payload: { lessonId },
+      });
+      message.success('创建成功！');
+    },
+    *getTaskDetail({ payload }, { call, put }) {
+      const response = yield call(getTaskDetail, payload);
+      if (!response) return;
+      yield put({
+        type: 'saveTaskDetail',
+        payload: response,
+      });
+    },
+    *setTaskScore({ payload }, { call, put }) {
+      const response = yield call(setTaskScore, payload);
+      if (!response) return;
+      yield put({
+        type: 'saveTaskDetail',
+        payload: response,
+      });
+      message.success('登记成功');
     },
   },
 
@@ -167,6 +219,24 @@ export default {
       return {
         ...state,
         classById,
+      };
+    },
+    saveLessonTaskList(state, { payload }) {
+      return {
+        ...state,
+        lessonTaskList: payload,
+      };
+    },
+    saveLessonAssessmentList(state, { payload }) {
+      return {
+        ...state,
+        lessonAssessmentList: payload,
+      };
+    },
+    saveTaskDetail(state, { payload }) {
+      return {
+        ...state,
+        taskDetail: payload,
       };
     },
   },

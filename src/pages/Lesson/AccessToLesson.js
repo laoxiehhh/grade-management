@@ -113,7 +113,7 @@ class AccessToLesson extends PureComponent {
     const paginationProps = {
       showQuickJumper: true,
       pageSize: 5,
-      total: accessToLessonListFormLesson.length,
+      total: currentSearchList.length,
     };
 
     const ListContent = ({ data: { Student, createdAt } }) => (

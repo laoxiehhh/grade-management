@@ -27,7 +27,8 @@ class TeacherLesson extends PureComponent {
   };
 
   handleTaskClick = value => {
-    console.log(value);
+    const { id } = value;
+    router.push(`/lesson/${id}/task`);
   };
 
   render() {
@@ -58,7 +59,7 @@ class TeacherLesson extends PureComponent {
             dataSource={[...selfLessonList]}
             renderItem={item => {
               const Action1 = <a onClick={() => this.handleAccessClick(item)}>课程审批</a>;
-              const Action2 = <a onClick={() => this.handleTaskClick(item)}>任务布置</a>;
+              const Action2 = <a onClick={() => this.handleTaskClick(item)}>课程任务</a>;
               return (
                 <List.Item key={item.id}>
                   <Card hoverable className={styles.card} actions={[Action1, Action2]}>

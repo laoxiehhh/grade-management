@@ -69,6 +69,18 @@ export default [
             component: './Lesson/AccessToLesson',
             hideInMenu: true,
           },
+          {
+            path: '/lesson/:lessonId/task',
+            name: '课程任务',
+            component: './Lesson/Task',
+            hideInMenu: true,
+          },
+          {
+            path: '/lesson/task/:taskId',
+            name: '成绩登记',
+            component: './Lesson/TaskDetail',
+            hideInMenu: true,
+          },
         ],
       },
     ],

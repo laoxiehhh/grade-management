@@ -8,8 +8,9 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       get() {
         return moment(this.getDataValue('Deadline')).format('YYYY-MM-DD');
-      }
-    }
+      },
+    },
+    Desc: DataTypes.STRING,
   });
 
   Task.associate = models => {

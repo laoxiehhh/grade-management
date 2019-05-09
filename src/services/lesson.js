@@ -38,3 +38,27 @@ export async function accessToLesson(payload) {
   const { accessToLessonId, Status } = payload;
   return myRequest.post(`/api/accessToLesson/${accessToLessonId}`, { data: { Status } });
 }
+
+export async function getLessonTask(payload) {
+  const { lessonId } = payload;
+  return myRequest(`/api/lesson/${lessonId}/task`);
+}
+
+export async function getLessonAssessments(payload) {
+  const { lessonId } = payload;
+  return myRequest(`/api/lesson/${lessonId}/assessment`);
+}
+
+export async function createLessonTask(payload) {
+  return myRequest.post('/api/task', { data: { ...payload } });
+}
+
+export async function getTaskDetail(payload) {
+  const { taskId } = payload;
+  return myRequest(`/api/task/${taskId}`);
+}
+
+export async function setTaskScore(payload) {
+  const { taskId, ScoreData } = payload;
+  return myRequest.post(`/api/task/${taskId}/score`, { data: { ScoreData } });
+}
