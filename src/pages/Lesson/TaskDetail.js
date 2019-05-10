@@ -64,6 +64,7 @@ class TaskDetail extends PureComponent {
         const payload = {
           taskId: match.params.taskId,
           ScoreData,
+          lessonId: match.params.lessonId,
         };
         dispatch({
           type: 'lesson/setTaskScore',

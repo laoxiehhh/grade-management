@@ -13,7 +13,6 @@ module.exports = (sequelize, DataTypes) => {
   Lesson.associate = models => {
     models.Lesson.belongsTo(models.Teacher);
     models.Lesson.belongsTo(models.Profession);
-    models.Lesson.belongsToMany(models.Student, { through: 'StudentLesson' });
   };
 
   return Lesson;

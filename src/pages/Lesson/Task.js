@@ -86,7 +86,9 @@ class AccessToLesson extends PureComponent {
 
   handleScore = value => {
     const { id } = value;
-    router.push(`/lesson/task/${id}`);
+    const { match } = this.props;
+    const { lessonId } = match.params;
+    router.push(`/lesson/${lessonId}/task/${id}`);
   };
 
   render() {

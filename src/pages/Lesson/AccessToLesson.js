@@ -191,7 +191,7 @@ class AccessToLesson extends PureComponent {
                 const { Student, Status } = item;
                 const Access = <a onClick={() => this.handleStudentAccess(item)}>批准通过</a>;
                 const HasAccess = (
-                  <a style={{ color: 'rgba(0,0,0,0.65)', cursor: 'not-allowed' }}>已加入</a>
+                  <a style={{ color: 'rgba(0,0,0,0.65)', cursor: 'not-allowed' }}>已经加入</a>
                 );
                 const ActionNode = Status === 0 ? Access : HasAccess;
                 const index = Student.Name.indexOf(currentSearchValue);

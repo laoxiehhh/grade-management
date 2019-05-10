@@ -59,6 +59,6 @@ export async function getTaskDetail(payload) {
 }
 
 export async function setTaskScore(payload) {
-  const { taskId, ScoreData } = payload;
-  return myRequest.post(`/api/task/${taskId}/score`, { data: { ScoreData } });
+  const { taskId, ScoreData, lessonId } = payload;
+  return myRequest.post(`/api/task/${taskId}/score`, { data: { ScoreData, lessonId } });
 }

@@ -52,10 +52,12 @@ router.get('/:taskId', authenticate, (req, res) => {
 //   studentId: score,
 //   studentId: score
 // }
-router.post('/:taskId/score', authenticate, (req, res) => {
+router.post('/:taskId/score', authenticate, async (req, res) => {
   const { taskId } = req.params;
-  const { ScoreData } = req.body;
-  const promissArr = [];
+  const { ScoreData, lessonId } = req.body;
+  const promissArr1 = [];
+  console.log(lessonId);
+  let currentScore = 0;
   models.Task.findByPk(+taskId).then(task => {
     task
       .getStudents({
@@ -64,9 +66,9 @@ router.post('/:taskId/score', authenticate, (req, res) => {
       .then(students => {
         students.forEach(student => {
           student.StudentTasks.Score = ScoreData[student.id];
-          promissArr.push(student.StudentTasks.save());
+          promissArr1.push(student.StudentTasks.save());
         });
-        Promise.all(promissArr).then(() => {
+        Promise.all(promissArr1).then(() => {
           res.json({
             code: 0,
             msg: '',
@@ -75,6 +77,58 @@ router.post('/:taskId/score', authenticate, (req, res) => {
         });
       });
   });
+
+  const lesson = await models.Lesson.findByPk(+lessonId);
+  const assessments = await lesson.getAssessments();
+  let map = {};
+  let promises1 = assessments.map(assessment => assessment.getTasks());
+  let taskList = await Promise.all(promises1);
+  assessments.forEach((assessment, index) => {
+    map[index] = {
+      proportion: assessment.Proportion,
+      tasks: taskList[index],
+      count: taskList[index].length,
+    };
+  });
+  const currentTask = await models.Task.findByPk(+taskId);
+  const students = await currentTask.getStudents();
+  for (let student of students) {
+    let scoreMap = {};
+    for (let index in map) {
+      const { tasks, count } = map[index];
+      scoreMap[index] = [];
+      if (count > 0) {
+        let promise2 = tasks.map(task =>
+          task.getStudents({
+            where: { id: student.id },
+          })
+        );
+        let studentTasks = await Promise.all(promise2);
+        studentTasks.forEach(item => {
+          item.forEach(i => {
+            scoreMap[index].push(i.StudentTasks.Score || 0);
+          });
+        });
+      }
+    }
+    let lessonScore = 0;
+    for (let index in scoreMap) {
+      if (scoreMap[index].length > 0) {
+        const total = scoreMap[index].reduce((pre, cur) => pre + cur, 0);
+        const average = Math.round(total / scoreMap[index].length);
+        lessonScore += Math.round((average * map[index].proportion) / 100);
+      }
+    }
+    lessonScore = lessonScore > 100 ? 100 : lessonScore;
+    const studentLesson = await models.StudentLessons.findOne({
+      where: {
+        StudentId: +student.id,
+        LessonId: +lessonId,
+      },
+    });
+    studentLesson.Score = lessonScore;
+    await studentLesson.save();
+  }
 });
 
 module.exports = router;
