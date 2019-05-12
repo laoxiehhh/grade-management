@@ -4,3 +4,7 @@ export async function getLessonStudentScore(payload) {
   const { lessonId } = payload;
   return myRequest(`/api/lesson/score/${lessonId}`);
 }
+
+export async function getTaskScore(payload) {
+  return myRequest.post('/api/task/getTaskScore', { data: { ...payload } });
+}

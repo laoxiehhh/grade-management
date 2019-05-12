@@ -56,8 +56,6 @@ router.post('/:taskId/score', authenticate, async (req, res) => {
   const { taskId } = req.params;
   const { ScoreData, lessonId } = req.body;
   const promissArr1 = [];
-  console.log(lessonId);
-  let currentScore = 0;
   models.Task.findByPk(+taskId).then(task => {
     task
       .getStudents({
@@ -129,6 +127,30 @@ router.post('/:taskId/score', authenticate, async (req, res) => {
     studentLesson.Score = lessonScore;
     await studentLesson.save();
   }
+});
+
+// 获取某个课程下，某个学生所有的任务成绩
+router.post('/getTaskScore', authenticate, async (req, res) => {
+  const { studentId, lessonId } = req.body;
+  const assessments = await models.Assessment.findAll({
+    where: { LessonId: +lessonId },
+  });
+
+  const assessmentIds = assessments.map(item => item.id);
+
+  const student = await models.Student.findOne({
+    where: { id: +studentId },
+  });
+
+  const tasks = await student.getTasks({
+    include: [models.Assessment],
+  });
+  const taskList = tasks.filter(item => assessmentIds.includes(item.AssessmentId));
+  res.json({
+    code: 0,
+    msg: '',
+    data: taskList,
+  });
 });
 
 module.exports = router;

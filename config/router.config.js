@@ -99,6 +99,12 @@ export default [
             name: '成绩查询',
             component: './Score/TeacherSearch',
           },
+          {
+            path: '/score/task',
+            name: '任务成绩',
+            component: './Score/SearchTask',
+            hideInMenu: true,
+          },
         ],
       },
     ],

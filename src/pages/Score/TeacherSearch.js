@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { List, Card, Input, Form, Select, Button } from 'antd';
+import router from 'umi/router';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import styles from './TeacherSearch.less';
 
@@ -71,6 +72,17 @@ class AccessToLesson extends PureComponent {
     this.setState({
       currentSearchClass: '',
       currentSearchName: '',
+    });
+  };
+
+  handleGoTask = data => {
+    const { id, StudentLessons } = data;
+    router.push({
+      pathname: '/score/task',
+      query: {
+        studentId: id,
+        lessonId: StudentLessons.LessonId,
+      },
     });
   };
 
@@ -198,7 +210,7 @@ class AccessToLesson extends PureComponent {
                     <span>{Name}</span>
                   );
                 return (
-                  <List.Item actions={[ActionNode]}>
+                  <List.Item actions={[ActionNode]} onClick={() => this.handleGoTask(item)}>
                     <List.Item.Meta title="学生姓名" description={studentName} />
                     <ListContent data={item} />
                   </List.Item>
