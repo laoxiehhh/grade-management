@@ -12,3 +12,7 @@ export async function getTaskScore(payload) {
 export async function getSelfLessonScore() {
   return myRequest('/api/lesson/self/score');
 }
+
+export async function getTeacherAllLessonScore() {
+  return myRequest('/api/lesson/self/alllessonscore');
+}

@@ -145,4 +145,21 @@ router.get('/self/score', authenticate, (req, res) => {
   });
 });
 
+// 获取当前老师的所有课程的所有学生的成绩
+router.get('/self/alllessonscore', authenticate, async (req, res) => {
+  const lessons = await req.currentUser.getLessons();
+  const promise = lessons.map(lesson =>
+    lesson.getStudents({
+      attributes: ['id', 'Name', 'ClassId'],
+      include: [models.Class],
+    })
+  );
+  const score = await Promise.all(promise);
+  res.json({
+    code: 0,
+    msg: '',
+    data: score,
+  });
+});
+
 module.exports = router;
