@@ -114,4 +114,22 @@ router.get('/:lessonId/task', (req, res) => {
   });
 });
 
+// 获取某个课程所有学生的成绩
+router.get('/score/:lessonId', authenticate, (req, res) => {
+  const { lessonId } = req.params;
+  models.Lesson.findByPk(+lessonId).then(lesson => {
+    lesson
+      .getStudents({
+        attributes: ['id', 'Name', 'ClassId'],
+      })
+      .then(students => {
+        res.json({
+          code: 0,
+          msg: '',
+          data: students,
+        });
+      });
+  });
+});
+
 module.exports = router;

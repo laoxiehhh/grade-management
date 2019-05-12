@@ -23,6 +23,7 @@ export default {
     lessonList: [],
     lessonById: {},
     selfLessonList: [],
+    selfLessonById: {},
     accessToLessonList: [], // 学生的申请列表
     accessToLessonListFormLesson: [], // 老师某个课程的申请列表
     classById: {}, // 所有班级的列表的map
@@ -171,9 +172,17 @@ export default {
       };
     },
     saveSelfLessons(state, { payload }) {
+      const selfLessonById = payload.reduce((pre, cur) => {
+        const { id, ...rest } = cur;
+        return {
+          ...pre,
+          [id]: rest,
+        };
+      }, {});
       return {
         ...state,
         selfLessonList: payload,
+        selfLessonById,
       };
     },
     saveLessonList(state, { payload }) {
