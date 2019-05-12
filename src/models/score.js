@@ -1,4 +1,4 @@
-import { getLessonStudentScore, getTaskScore } from '@/services/score';
+import { getLessonStudentScore, getTaskScore, getSelfLessonScore } from '@/services/score';
 
 export default {
   namespace: 'score',
@@ -22,6 +22,14 @@ export default {
       if (!response) return;
       yield put({
         type: 'saveCurrentLessonTask',
+        payload: response,
+      });
+    },
+    *getSelfLessonScore(_, { call, put }) {
+      const response = yield call(getSelfLessonScore);
+      if (!response) return;
+      yield put({
+        type: 'saveCurrentLessonStudent',
         payload: response,
       });
     },

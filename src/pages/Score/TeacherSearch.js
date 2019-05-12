@@ -14,7 +14,7 @@ const { Option } = Select;
   loading: loading.models.score,
 }))
 @Form.create()
-class AccessToLesson extends PureComponent {
+class TeacherSearch extends PureComponent {
   state = {
     currentSearchName: '',
     currentSearchClass: '',
@@ -224,4 +224,4 @@ class AccessToLesson extends PureComponent {
   }
 }
 
-export default AccessToLesson;
+export default TeacherSearch;

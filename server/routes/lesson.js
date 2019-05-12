@@ -132,4 +132,17 @@ router.get('/score/:lessonId', authenticate, (req, res) => {
   });
 });
 
+// 获取当前学生的所有课程的成绩
+router.get('/self/score', authenticate, (req, res) => {
+  models.StudentLessons.findAll({
+    where: { StudentId: +req.currentUser.id },
+  }).then(scores => {
+    res.json({
+      code: 0,
+      msg: '',
+      data: scores,
+    });
+  });
+});
+
 module.exports = router;

@@ -98,12 +98,18 @@ export default [
             path: '/score/teachersearch',
             name: '成绩查询',
             component: './Score/TeacherSearch',
+            authority: ['teacher'],
           },
           {
             path: '/score/task',
             name: '任务成绩',
             component: './Score/SearchTask',
             hideInMenu: true,
+          },
+          {
+            path: '/score/studentsearch',
+            name: '成绩查询',
+            component: './Score/StudentSearch',
           },
         ],
       },

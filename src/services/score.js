@@ -8,3 +8,7 @@ export async function getLessonStudentScore(payload) {
 export async function getTaskScore(payload) {
   return myRequest.post('/api/task/getTaskScore', { data: { ...payload } });
 }
+
+export async function getSelfLessonScore() {
+  return myRequest('/api/lesson/self/score');
+}
