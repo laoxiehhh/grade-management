@@ -1,4 +1,4 @@
-import { login, register } from '@/services/user';
+import { login, register, getUserInfo, modUserInfo, modUserPassword } from '@/services/user';
 import { routerRedux } from 'dva/router';
 import { stringify } from 'qs';
 import { setToken, removeToken, removeAuthorizationToken } from '@/utils/setAuthorizationToken';
@@ -12,6 +12,7 @@ export default {
 
   state: {
     currentUser: {},
+    userInfo: {}, // 当前用户信息
   },
 
   effects: {
@@ -66,6 +67,46 @@ export default {
       if (!response) return;
       message.success('注册成功!');
     },
+    *getUserInfo(_, { call, put }) {
+      const response = yield call(getUserInfo);
+      if (!response) return;
+      yield put({
+        type: 'global/getClasses',
+        payload: { ProfessionId: response.ProfessionId },
+      });
+      yield put({
+        type: 'saveUserInfo',
+        payload: response,
+      });
+    },
+    *modUserInfo({ payload }, { call, put, select }) {
+      const response = yield call(modUserInfo, payload);
+      if (!response) return;
+      const currentUser = yield select(state => state.user.currentUser);
+      yield put({
+        type: 'saveUserInfo',
+        payload: response,
+      });
+      yield put({
+        type: 'saveCurrentUser',
+        payload: {
+          ...currentUser,
+          Name: response.Name,
+          Username: response.Username,
+        },
+      });
+      yield call(setToken, response.newToken);
+      message.success('修改成功!');
+    },
+    *modUserPassword({ payload }, { call, put }) {
+      const response = yield call(modUserPassword, payload);
+      if (!response) return;
+      yield put({
+        type: 'saveUserInfo',
+        payload: response,
+      });
+      message.success('修改成功！');
+    },
   },
 
   reducers: {
@@ -79,6 +120,12 @@ export default {
       setAuthority(payload.currentAuthority);
       return {
         ...state,
+      };
+    },
+    saveUserInfo(state, { payload }) {
+      return {
+        ...state,
+        userInfo: payload,
       };
     },
   },

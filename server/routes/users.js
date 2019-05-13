@@ -4,6 +4,7 @@ const models = require('../models');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const config = require('../config/config');
+const authenticate = require('../middlewares/authenticate');
 
 const findClassById = ClassId => {
   return models.Class.findByPk(ClassId);
@@ -214,6 +215,69 @@ router.post('/login', (req, res) => {
       }
     });
   }
+});
+
+// 获取当前用户的信息
+router.get('/getUserInfo', authenticate, (req, res) => {
+  res.json({
+    code: 0,
+    msg: '',
+    data: req.currentUser,
+  });
+});
+
+// 修改当前用户的信息
+router.post('/modUserInfo', authenticate, (req, res) => {
+  const { Name, Username } = req.body;
+  const { id, CurrentAuthority, Type } = req.tokenDecoded;
+  const newToken = jwt.sign(
+    {
+      id,
+      Name,
+      Username,
+      CurrentAuthority,
+      Type,
+    },
+    config.jwtSecret
+  );
+  req.currentUser
+    .update({
+      ...req.body,
+    })
+    .then(user => {
+      const { dataValues } = user;
+      res.json({
+        code: 0,
+        msg: '',
+        data: {
+          ...dataValues,
+          newToken,
+        },
+      });
+    });
+});
+
+// 修改当前用户的密码
+router.post('/modUserPassword', authenticate, (req, res) => {
+  const { Password, Old_Password } = req.body;
+  bcrypt.compare(Old_Password, req.currentUser.Password, (err, isMatch) => {
+    if (isMatch) {
+      const password_digest = bcrypt.hashSync(Password, 10);
+      req.currentUser.update({ Password: password_digest }).then(user => {
+        res.json({
+          code: 0,
+          msg: '',
+          data: user,
+        });
+      });
+    } else {
+      res.json({
+        code: 1,
+        msg: '旧密码错误',
+        data: {},
+      });
+    }
+  });
 });
 
 module.exports = router;

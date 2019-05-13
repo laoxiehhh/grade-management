@@ -19,22 +19,26 @@ const authenticate = (req, res, next) => {
         if (Type === 1) {
           models.Student.findOne({
             where: { Username },
+            include: [models.Class, models.Profession],
           }).then(student => {
             if (!student) {
               res.status(401).json({ error: 'No such user' });
             } else {
               req.currentUser = student;
+              req.tokenDecoded = decoded;
               next();
             }
           });
         } else if (Type === 2) {
           models.Teacher.findOne({
             where: { Username },
+            include: [models.Profession],
           }).then(teacher => {
             if (!teacher) {
               res.status(401).json({ error: 'No such user' });
             } else {
               req.currentUser = teacher;
+              req.tokenDecoded = decoded;
               next();
             }
           });
@@ -46,6 +50,7 @@ const authenticate = (req, res, next) => {
               res.status(401).json({ error: 'No such user' });
             } else {
               req.currentUser = admin;
+              req.tokenDecoded = decoded;
               next();
             }
           });

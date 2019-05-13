@@ -47,6 +47,7 @@ export default [
         path: '/lesson',
         name: '课程管理',
         icon: 'project',
+        authority: ['teacher', 'student'],
         routes: [
           {
             path: '/lesson/create',
@@ -93,6 +94,7 @@ export default [
         path: '/score',
         name: '统计查询',
         icon: 'dashboard',
+        authority: ['teacher', 'student'],
         routes: [
           {
             path: '/score/teachersearch',
@@ -123,6 +125,24 @@ export default [
             name: '成绩分析',
             component: './Score/TeacherAnalysis',
             authority: ['teacher'],
+          },
+        ],
+      },
+      {
+        path: '/account',
+        name: '个人管理',
+        icon: 'user',
+        authority: ['teacher', 'student'],
+        routes: [
+          {
+            path: '/account/center',
+            name: '个人信息',
+            component: './User/UserCenter',
+          },
+          {
+            path: '/account/pass',
+            name: '修改密码',
+            component: './User/ModPassword',
           },
         ],
       },

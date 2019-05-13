@@ -14,7 +14,7 @@ export default class GlobalHeaderRight extends PureComponent {
         </Menu.Item>
         <Menu.Item key="userinfo">
           <Icon type="setting" />
-          <span>个人设置</span>
+          <span>修改密码</span>
         </Menu.Item>
         <Menu.Divider />
         <Menu.Item key="logout">

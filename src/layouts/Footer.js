@@ -8,21 +8,21 @@ const FooterView = () => (
     <GlobalFooter
       links={[
         {
-          key: 'Pro 首页',
-          title: 'Pro 首页',
-          href: 'https://pro.ant.design',
+          key: '首页',
+          title: '首页',
+          href: '/welcome',
           blankTarget: true,
         },
         {
           key: 'github',
           title: <Icon type="github" />,
-          href: 'https://github.com/ant-design/ant-design-pro',
+          href: 'https://github.com/laoxiehhh/grade-management',
           blankTarget: true,
         },
         {
-          key: 'Ant Design',
-          title: 'Ant Design',
-          href: 'https://ant.design',
+          key: 'Blog',
+          title: 'Blog',
+          href: 'https://github.com/laoxiehhh/laoxiea',
           blankTarget: true,
         },
       ]}

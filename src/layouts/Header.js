@@ -56,7 +56,7 @@ class HeaderView extends PureComponent {
       return;
     }
     if (key === 'userinfo') {
-      router.push('/account/settings/base');
+      router.push('/account/pass');
       return;
     }
     if (key === 'logout') {

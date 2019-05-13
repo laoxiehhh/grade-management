@@ -21,12 +21,6 @@ class StudentSearch extends PureComponent {
 
   componentDidMount() {
     const { dispatch } = this.props;
-    // dispatch({
-    //   type: 'lesson/getSelfLessons',
-    // });
-    // dispatch({
-    //   type: 'score/getSelfLessonScore',
-    // });
     dispatch({
       type: 'score/getStudentAnalysisData',
     });
