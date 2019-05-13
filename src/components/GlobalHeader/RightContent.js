@@ -8,15 +8,19 @@ export default class GlobalHeaderRight extends PureComponent {
     const { currentUser, onMenuClick, theme } = this.props;
     const menu = (
       <Menu className={styles.menu} selectedKeys={[]} onClick={onMenuClick}>
-        <Menu.Item key="userCenter">
-          <Icon type="user" />
-          <span>个人中心</span>
-        </Menu.Item>
-        <Menu.Item key="userinfo">
-          <Icon type="setting" />
-          <span>修改密码</span>
-        </Menu.Item>
-        <Menu.Divider />
+        {currentUser.CurrentAuthority !== 'admin' && (
+          <Menu.Item key="userCenter">
+            <Icon type="user" />
+            <span>个人中心</span>
+          </Menu.Item>
+        )}
+        {currentUser.CurrentAuthority !== 'admin' && (
+          <Menu.Item key="userinfo">
+            <Icon type="setting" />
+            <span>修改密码</span>
+          </Menu.Item>
+        )}
+        {currentUser.CurrentAuthority !== 'admin' && <Menu.Divider />}
         <Menu.Item key="logout">
           <Icon type="logout" />
           <span>退出登录</span>
